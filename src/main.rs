@@ -14,12 +14,13 @@ fn main() {
     worker.introduce();
 
     let worker_by_mail = Worker::instanciate_with_mail("edmond-cofee-0@inra.com");
+    let me = Worker::instanciate_with_mail("erwann-validation-598@stim.com");
     worker_by_mail.introduce();
+    me.introduce();
 }
 
 /*
     Créer une fonction qui retourne la partie d'une string avant séparateur 
-
 */
 /*
 fn get_first_word(full_string: &str, c: char) -> &str{
@@ -54,10 +55,7 @@ fn separate_string(full_string: &str, c: char) -> Vec<&str> {
 */
 
 /* Créer une fonction pour splice une string après n itérations du séparateur
-
-    Todo : Rajouter un caractère limite
-           Gérer après le dernier separateur
- */ 
+*/ 
 fn separate_string_after_n(full_string: &str, c: char, nb: u64) -> &str {
     let mut last_index = 0;
     let mut counter = 0;
@@ -91,10 +89,11 @@ fn get_string_between(full_string: &str, begin_char: char, ending_char: char, nb
     // if ending_char != begin_char {
         for (i, &item) in bytes.iter().enumerate() {
             if item == begin_char {
+                counter_begin_char += 1;
                 // If we are not at the nb of char, we inc.
-                if counter_begin_char != nb_begin_char {
-                    counter_begin_char += 1;
-                }
+                if counter_begin_char == nb_begin_char {
+                    last_index = i+1;
+                } 
             } else if item == ending_char {
                 counter_ending_char += 1;
                 if counter_ending_char == nb_ending_char {
@@ -105,6 +104,17 @@ fn get_string_between(full_string: &str, begin_char: char, ending_char: char, nb
     // }
     return full_string;
 }
+
+
+/* Première lettre en maj */
+fn capitalize(s: &str) -> String{
+    match s.chars().next() {
+        Some(c) => c.to_uppercase().to_string() + &s[1..],
+        None => "".to_string(),
+    }
+}
+
+
 
 /* Créer une struct Worker avec les attributs name, department, id, entreprise et mail */
 struct Worker {
@@ -117,18 +127,24 @@ struct Worker {
 
 impl Worker {
     fn introduce(&self) {
-        println!("Hello, my name is {}, i'm working at {} in the {} department", self.name, self.entreprise, self.department)
+        println!("Hello, my name is {}, i'm working at {} in the {} department, I'm identified with ID {} and my mail is {}",
+            self.name, 
+            self.entreprise, 
+            self.department,
+            self.id,
+            self.mail
+        );
     }
     fn instanciate_with_mail(mail: &str) -> Worker {
-        let w_name = separate_string_after_n(mail, '-', 1);
-        let w_department = separate_string_after_n(mail, '-', 2);
-        let w_entreprise = "Inrae";
-        let w_id = 0;
+        let name = capitalize(separate_string_after_n(mail, '-', 1));
+        let department = separate_string_after_n(mail, '-', 2);
+        let entreprise = get_string_between(mail, '@', '.', 1, 1);
+        let id = get_string_between(mail, '-', '@', 2, 1).parse().expect("Error converting string to integer");
         let worker: Worker = Worker { 
-            name: String::from(w_name), 
-            department: String::from(w_department), 
-            id: w_id, 
-            entreprise: String::from(w_entreprise), 
+            name: String::from(name), 
+            department: String::from(department), 
+            id: id, 
+            entreprise: String::from(entreprise), 
             mail: String::from(mail) 
         };
 
