@@ -3,20 +3,21 @@ fn main() {
     println!("{}", get_string_between(&test, 'B', 'o', 1, 3));
     let test2 = separate_string_after_n(&test, ' ', 4);
     println!("{}", test2);
-
-    let worker: Worker = Worker {
-        name : String::from("Roger"),
-        department : String::from("research"),
-        entreprise : String::from("Nasa"),
-        mail: String::from("roger-research-1@nasa.com"),
-        id: 1,
-    };
-    worker.introduce();
-
-    let worker_by_mail = Worker::instanciate_with_mail("edmond-cofee-0@inra.com");
+    
     let me = Worker::instanciate_with_mail("erwann-validation-598@stim.com");
-    worker_by_mail.introduce();
     me.introduce();
+    println!("{:?}", me);
+    let tony: Worker = Worker {
+        mail: String::from("tony-validation-599@stim.com"),
+        id: 599,
+        name: String::from("Tony"),
+        ..me
+    };
+    tony.introduce();
+    println!("{:?}", tony);
+
+    let home = IpAddress::V4(127,0,0,1);
+    println!()
 }
 
 /*
@@ -117,6 +118,7 @@ fn capitalize(s: &str) -> String{
 
 
 /* Créer une struct Worker avec les attributs name, department, id, entreprise et mail */
+#[derive(Debug)]
 struct Worker {
     name: String,
     department: String,
@@ -153,7 +155,7 @@ impl Worker {
 }
 
 
-// /* Créer une fonction pour instancier une struct uniquement grâce au mail sous la forme nom-department-id@entreprise.com */
-// fn create_worker(mail: String) -> Worker {
-//     let name: &str
-// }
+enum IpAddress {
+    V4(u8,u8,u8,u8),
+    V6(String),
+}
